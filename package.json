@@ -1,5 +1,6 @@
 {
   "name": "taskslife",
+  "description": "What have you done in your life? 😕",
   "version": "0.1.0",
   "private": true,
   "scripts": {
