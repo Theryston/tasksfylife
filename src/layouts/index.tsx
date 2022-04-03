@@ -1,6 +1,8 @@
 import { NextPage } from "next";
 import Head from "next/head";
 import React, { ReactNode } from "react";
+import styled from "styled-components";
+import SideMenu from "../components/SideMenu";
 
 interface IProps {
   children: ReactNode;
@@ -9,7 +11,7 @@ interface IProps {
   image?: string;
 }
 
-export const Layout: NextPage<IProps> = ({
+const Layout: NextPage<IProps> = ({
   children,
   title = "Taskslife - What have you done in your life? 😕",
   description = "Share your life goals with everyone in the world.",
@@ -24,9 +26,18 @@ export const Layout: NextPage<IProps> = ({
         <meta name="description" content={description} />
         <meta property="og:image" content={image} />
       </Head>
-      <body>
-        <div> {children} </div>
-      </body>
+      <Body>
+        <SideMenu />
+        <Container> {children} </Container>
+      </Body>
     </>
   );
 };
+
+export const Body = styled.body`
+  display: flex;
+`;
+
+export const Container = styled.div``;
+
+export default Layout;

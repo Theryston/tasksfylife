@@ -13,7 +13,13 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
       async session(data) {
         const { user } = data;
         await CreateLifeService.execute({ user });
-        return data.session;
+        return {
+          ...data.session,
+          user: {
+            ...data.session.user,
+            id: user.id,
+          },
+        };
       },
     },
     providers: [

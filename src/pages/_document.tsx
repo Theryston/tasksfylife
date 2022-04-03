@@ -17,10 +17,10 @@ export default class MyDocument extends Document {
       return {
         ...initialProps,
         styles: (
-          <>
+          <html lang="en">
             {initialProps.styles}
             {sheet.getStyleElement()}
-          </>
+          </html>
         ),
       };
     } finally {
