@@ -1,8 +1,8 @@
-import dbConnect from "../database/configs/dbConnect";
-import { IUser } from "../../interfaces/IUser";
-import Life from "../database/models/Life";
+import dbConnect from "../configs/dbConnect";
+import { IUser } from "../interfaces/IUser";
+import Life from "../models/Life";
 
-export default class CreateLife {
+export default class CreateLifeService {
   /**
    *
    * @param {IUser} user - User data object
