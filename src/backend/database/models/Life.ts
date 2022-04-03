@@ -21,4 +21,6 @@ const LifeSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.models.Life || mongoose.model("Life", LifeSchema);
+const Life = mongoose.models.Life || mongoose.model("Life", LifeSchema);
+
+export default Life;
