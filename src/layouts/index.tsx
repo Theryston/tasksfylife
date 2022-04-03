@@ -13,7 +13,7 @@ export const Layout: NextPage<IProps> = ({
   children,
   title = "Taskslife - What have you done in your life? 😕",
   description = "Share your life goals with everyone in the world.",
-  image = "/images/logo.png",
+  image = "https://taskslife.vercel.app/images/logo.png",
 }) => {
   return (
     <>
