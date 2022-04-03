@@ -11,6 +11,7 @@ export const theme = {
       Orange: "#FFF3DC",
       DarkBlue: "#474C5C",
       backgroundColor: "#252831",
+      FontColor: "#FFFFFF",
     },
   },
 };

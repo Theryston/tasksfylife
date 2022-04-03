@@ -18,7 +18,10 @@ const Home: NextPage = () => {
         {!session ? (
           <button onClick={() => signIn()}>Login</button>
         ) : (
-          <button onClick={() => signOut()}>Logout</button>
+          <>
+            <button onClick={() => signOut()}>Logout</button>
+            {session?.user?.name}
+          </>
         )}
       </main>
     </div>
