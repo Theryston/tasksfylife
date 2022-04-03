@@ -3,7 +3,6 @@ import Head from "next/head";
 import React, { ReactNode } from "react";
 import styled from "styled-components";
 import Header from "../components/Header";
-import SideMenu from "../components/SideMenu";
 
 interface IProps {
   children: ReactNode;
