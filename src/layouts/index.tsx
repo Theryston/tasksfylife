@@ -27,7 +27,6 @@ const Layout: NextPage<IProps> = ({
         <meta property="og:image" content={image} />
       </Head>
       <Body>
-        <SideMenu />
         <Container> {children} </Container>
       </Body>
     </>
