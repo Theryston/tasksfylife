@@ -8,8 +8,8 @@ import { SessionProvider } from "next-auth/react";
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <>
-      <GlobalStyles />
       <ThemeProvider theme={theme.darkTheme}>
+        <GlobalStyles />
         <SessionProvider session={session}>
           <Component {...pageProps} />
         </SessionProvider>
