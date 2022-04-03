@@ -2,6 +2,7 @@ import { NextPage } from "next";
 import Head from "next/head";
 import React, { ReactNode } from "react";
 import styled from "styled-components";
+import Header from "../components/Header";
 import SideMenu from "../components/SideMenu";
 
 interface IProps {
@@ -27,6 +28,7 @@ const Layout: NextPage<IProps> = ({
         <meta property="og:image" content={image} />
       </Head>
       <Body>
+        <Header />
         <Container> {children} </Container>
       </Body>
     </>
@@ -34,9 +36,13 @@ const Layout: NextPage<IProps> = ({
 };
 
 export const Body = styled.body`
-  display: flex;
+  display: block;
+  padding: 10px;
+  width: 100%;
 `;
 
-export const Container = styled.div``;
+export const Container = styled.div`
+  padding-top: 20px;
+`;
 
 export default Layout;

@@ -12,12 +12,15 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     callbacks: {
       async session(data) {
         const { user } = data;
-        await CreateLifeService.execute({ user });
+        const life = await CreateLifeService.execute({ user });
         return {
           ...data.session,
-          user: {
-            ...data.session.user,
-            id: user.id,
+          life: {
+            id: life._id,
+            name: life.name,
+            cards: life.cards,
+            updatedAt: life.updatedAt,
+            createdAt: life.createdAt,
           },
         };
       },

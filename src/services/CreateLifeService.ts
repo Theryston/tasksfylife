@@ -1,24 +1,30 @@
 import dbConnect from "../configs/dbConnect";
-import { IUser } from "../interfaces/IUser";
+import { ILife, IUser } from "../interfaces/IUser";
 import Life from "../models/Life";
 
 export default class CreateLifeService {
   /**
    *
-   * @param {IUser} user - User data object
-   * @returns {Promise<void>} - Promise that resolves when the life is created
+   * @param {IUser} user - User data
+   * @returns {Promise<ILife>} Life data object.
+   * @description Create a new life for the user. if already exists, return the existing life.
    */
-  public static async execute({ user }: { user: IUser }): Promise<void> {
+  public static async execute({ user }: { user: IUser }): Promise<ILife> {
     await dbConnect();
 
-    const life = await Life.findOne({ user: user.id });
+    let life = await Life.findOne({ user: user.id }).populate({
+      path: "Card",
+      strictPopulate: false,
+    });
 
     if (!life) {
-      await Life.create({
+      life = await Life.create({
         name: user.name,
         user: user.id,
         cards: [],
       });
     }
+
+    return life;
   }
 }
