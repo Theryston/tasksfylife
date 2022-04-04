@@ -5,6 +5,7 @@ import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import { ITask } from "../../interfaces/ICard";
 import { ILife } from "../../interfaces/IUser";
+import Checkbox from "../Checkbox";
 import LifeData from "../LifeData";
 
 interface IProps {
@@ -79,22 +80,7 @@ const CreateCardModal: NextPage<IProps> = ({ show, setter }) => {
           onChange={(e) => setCardDescription(e.target.value)}
         />
         {tasks.map((task) => (
-          <>
-            {task && (
-              <div className="d-flex align-items-center">
-                <input
-                  id={task._id}
-                  type="checkbox"
-                  onClick={(e) => {
-                    (e.target as any).checked = task.done;
-                  }}
-                />
-                <ParagraphTask htmlFor={task._id} key={task._id}>
-                  {task.label}
-                </ParagraphTask>
-              </div>
-            )}
-          </>
+          <>{task && <Checkbox label={task.label} readOnly={true} />}</>
         ))}
         <MainInput
           type="text"
@@ -102,10 +88,6 @@ const CreateCardModal: NextPage<IProps> = ({ show, setter }) => {
           placeholder="Create a new task"
           value={textCreateTask}
           onChange={(e) => setTextCreateTask(e.target.value)}
-          onBlur={() => {
-            handleCreateTask();
-            setTextCreateTask("");
-          }}
           onKeyUp={(event) => {
             if (event.keyCode === 13) {
               handleCreateTask();
@@ -117,13 +99,6 @@ const CreateCardModal: NextPage<IProps> = ({ show, setter }) => {
     </Container>
   );
 };
-
-export const ParagraphTask = styled.label`
-  font-style: normal;
-  font-weight: 300;
-  font-size: 14px;
-  margin: 4px;
-`;
 
 export const Container = styled(Modal)`
   color: ${(props) => props.theme.colors.DarkGrey} !important;
