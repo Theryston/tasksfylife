@@ -19,11 +19,26 @@ export default class CreateLifeService {
     });
 
     if (!life) {
-      life = await Life.create({
-        name: slugify(user.name ? user.name : user.id),
-        user: user.id,
-        cards: [],
+      const lifeByName = await Life.findOne({
+        name: slugify(user.name?.toLocaleLowerCase() as string),
       });
+
+      if (lifeByName) {
+        life = await Life.create({
+          name: slugify(
+            user.name?.toLocaleLowerCase() +
+              user.id.substring(user.id.length - 4, user.id.length)
+          ),
+          user: user.id,
+          cards: [],
+        });
+      } else {
+        life = await Life.create({
+          name: slugify(user.name?.toLocaleLowerCase() as string),
+          user: user.id,
+          cards: [],
+        });
+      }
     }
 
     return life;
