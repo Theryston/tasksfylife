@@ -32,7 +32,7 @@ const Checkbox: NextPage<IProps> = ({
   }, [onChange, readOnly]);
 
   return (
-    <Container>
+    <Container onClick={(e) => handleCheck()}>
       <InputCheck
         id={id}
         type="checkbox"
@@ -41,7 +41,7 @@ const Checkbox: NextPage<IProps> = ({
         }}
         checked={check}
       />
-      <CheckboxContent onClick={(e) => handleCheck()} checked={check}>
+      <CheckboxContent checked={check}>
         <CheckedIcon show={check} viewBox="0 0 24 24">
           <polyline points="20 6 9 17 4 12" />
         </CheckedIcon>
@@ -55,7 +55,6 @@ const Checkbox: NextPage<IProps> = ({
 
 export const Container = styled.div`
   display: flex;
-  align-items: center;
   gap: 8px;
 `;
 
@@ -67,6 +66,7 @@ export const InputCheck = styled.input`
 export const CheckboxContent = styled.div<{ checked: boolean }>`
   width: 16px;
   height: 16px;
+  flex: none;
   padding: 2px;
   background: #e1e4e8;
   border-radius: 4px;
