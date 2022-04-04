@@ -1,15 +1,29 @@
 import { NextPage } from "next";
 import { signIn, useSession } from "next-auth/react";
+import { useState } from "react";
 import styled from "styled-components";
+import CreateCardModal from "../CreateCardModal";
 
 const AddButton: NextPage = () => {
+  const [showModalCreateCard, setShowModalCreateCard] =
+    useState<boolean>(false);
   const { data: session } = useSession();
 
   if (!session) {
     return <ContainerButton onClick={() => signIn()}>+</ContainerButton>;
   }
 
-  return <ContainerButton>+</ContainerButton>;
+  return (
+    <div>
+      <CreateCardModal
+        show={showModalCreateCard}
+        setter={setShowModalCreateCard}
+      />
+      <ContainerButton onClick={() => setShowModalCreateCard(true)}>
+        +
+      </ContainerButton>
+    </div>
+  );
 };
 
 export const ContainerButton = styled.button`
