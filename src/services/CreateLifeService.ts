@@ -1,3 +1,4 @@
+import slugify from "slugify";
 import dbConnect from "../configs/dbConnect";
 import { ILife, IUser } from "../interfaces/IUser";
 import Life from "../models/Life";
@@ -19,7 +20,7 @@ export default class CreateLifeService {
 
     if (!life) {
       life = await Life.create({
-        name: user.name,
+        name: slugify(user.name ? user.name : user.id),
         user: user.id,
         cards: [],
       });

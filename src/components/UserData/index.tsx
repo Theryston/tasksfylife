@@ -12,7 +12,7 @@ const UserData: NextPage = () => {
   }
 
   return (
-    <Link href={`/life/${session.life.id}`}>
+    <Link href={`/life/${session.life.name}`}>
       <a>
         <Container>
           <Image
