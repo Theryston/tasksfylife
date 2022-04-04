@@ -16,7 +16,7 @@ const UserData: NextPage = () => {
       <a>
         <Container>
           <Image
-            src={session.user?.image as string}
+            src={session.life.image as string}
             alt="User Profile image"
             width={20}
             height={20}

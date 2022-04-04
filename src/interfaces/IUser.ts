@@ -13,6 +13,8 @@ export interface ILife {
   user: IUser;
   cards: ICard[];
   createdAt: Date;
+  image?: string | null;
   updatedAt: Date;
   __v: number;
+  number?: number;
 }

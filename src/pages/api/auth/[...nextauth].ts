@@ -16,11 +16,13 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
         return {
           ...data.session,
           life: {
-            id: life._id,
+            _id: life._id,
             name: life.name,
             cards: life.cards,
+            image: life.image,
             updatedAt: life.updatedAt,
             createdAt: life.createdAt,
+            number: life.createdAt.getTime(),
           },
         };
       },
