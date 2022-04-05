@@ -1,6 +1,9 @@
 import nextConnect from "next-connect";
 import { NextApiRequest, NextApiResponse } from "next";
-import CreateTaskService from "../../../services/CreateTaskService";
+import { getSession } from "next-auth/react";
+import { ILife } from "../../../interfaces/IUser";
+import ErrorApp from "../../../errors";
+import CreateCardService from "../../../services/CreateCardForLife";
 
 export default nextConnect<NextApiRequest, NextApiResponse>({
   attachParams: true,
@@ -19,15 +22,22 @@ export default nextConnect<NextApiRequest, NextApiResponse>({
 }).post(postHandler);
 
 async function postHandler(request: NextApiRequest, response: NextApiResponse) {
-  const { label } = request.body;
+  const { life }: { life: ILife } = (await getSession({ req: request })) as any;
 
-  const task = await CreateTaskService.execute({
-    label,
-  });
+  if (!life) {
+    throw new ErrorApp({
+      status: 401,
+      message: "You must be logged in to create a card",
+    });
+  }
+
+  const cardData = request.body;
+
+  const card = await CreateCardService.execute(life._id, cardData);
 
   response.status(201).json({
-    message: "Task created",
+    message: "Card created",
     status: 201,
-    data: task,
+    data: card,
   });
 }

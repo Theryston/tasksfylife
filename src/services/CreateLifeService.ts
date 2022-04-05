@@ -40,6 +40,7 @@ export default class CreateLifeService {
           user: user.id,
           image: user.image,
           cards: [],
+          lefts: [],
         });
       } else {
         life = await Life.create({
@@ -47,6 +48,7 @@ export default class CreateLifeService {
           image: user.image,
           user: user.id,
           cards: [],
+          lefts: [],
         });
       }
     }

@@ -3,9 +3,10 @@ import { useSession } from "next-auth/react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
-import { ITask } from "../../interfaces/ICard";
+import { ITag, ITask } from "../../interfaces/ICard";
 import { ILife } from "../../interfaces/IUser";
 import Checkbox from "../Checkbox";
+import InputTag from "../InputTag";
 import LifeData from "../LifeData";
 
 const CHARACTERS_PER_LINE_IN_CARD_DESCRIPTION = 30;
@@ -17,10 +18,13 @@ interface IProps {
 }
 
 const CreateCardModal: NextPage<IProps> = ({ show, setter }) => {
-  const [cardName, setCardName] = useState("");
+  const [cardTitle, setCardTitle] = useState("");
   const [cardDescription, setCardDescription] = useState("");
   const [textCreateTask, setTextCreateTask] = useState<string>("");
   const [tasks, setTasks] = useState<ITask[]>([]);
+
+  const [options, setOptions] = useState<ITag[]>([]);
+  const [optionsSelected, setOptionsSelected] = useState<ITag[]>([]);
 
   const cardDescriptionRef = useRef(null);
 
@@ -29,6 +33,19 @@ const CreateCardModal: NextPage<IProps> = ({ show, setter }) => {
   >([""]);
 
   const { data: session } = useSession();
+
+  useEffect(() => {
+    const loadTags = async () => {
+      const response = await fetch("/api/tags");
+      const { data: tags }: { data: ITag[] } = await response.json();
+      setOptions(tags);
+    };
+    loadTags();
+  }, []);
+
+  const handleChangeSelect = useCallback((options: ITag[]) => {
+    setOptionsSelected(options);
+  }, []);
 
   useEffect(() => {
     if (!cardDescriptionRef || !cardDescriptionRef.current) {
@@ -79,16 +96,37 @@ const CreateCardModal: NextPage<IProps> = ({ show, setter }) => {
 
   const handleHide = useCallback(() => {
     setCardDescription("");
-    setCardName("");
+    setCardTitle("");
+    setOptionsSelected([]);
     setTasks([]);
     setter(false);
   }, [setter]);
 
-  const handleCreateCard = useCallback(() => {
-    console.log(cardName, cardDescription, tasks);
+  const createCardObject = useCallback(async () => {
+    const tagIds = optionsSelected.map((option) => option._id);
+    const taskIds = tasks.map((task) => task._id);
+
+    return {
+      title: cardTitle,
+      description: cardDescription,
+      tags: tagIds,
+      tasks: taskIds,
+    };
+  }, [optionsSelected, tasks, cardTitle, cardDescription]);
+
+  const handleCreateCard = useCallback(async () => {
+    const life = await createCardObject();
+
+    await fetch("/api/cards", {
+      method: "POST",
+      body: JSON.stringify(life),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     handleHide();
-  }, [cardName, cardDescription, tasks, handleHide]);
+  }, [handleHide, createCardObject]);
 
   const handleCreateTask = useCallback(async () => {
     if (!textCreateTask || !textCreateTask.length) {
@@ -125,9 +163,9 @@ const CreateCardModal: NextPage<IProps> = ({ show, setter }) => {
         <MainInput
           type="text"
           className="mt-3"
-          placeholder="Write a name for your card"
-          value={cardName}
-          onChange={(e) => setCardName(e.target.value)}
+          placeholder="Write a title for your card"
+          value={cardTitle}
+          onChange={(e) => setCardTitle(e.target.value)}
         />
         <InputCardDescription
           ref={cardDescriptionRef}
@@ -151,6 +189,10 @@ const CreateCardModal: NextPage<IProps> = ({ show, setter }) => {
               setTextCreateTask("");
             }
           }}
+        />
+        <InputTag
+          options={options}
+          onChange={(options) => handleChangeSelect(options)}
         />
       </ModalBody>
     </Container>

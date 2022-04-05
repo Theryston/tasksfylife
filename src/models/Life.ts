@@ -18,6 +18,10 @@ const LifeSchema = new mongoose.Schema(
       type: [mongoose.Schema.Types.ObjectId],
       ref: "Card",
     },
+    lefts: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Left",
+    },
   },
   {
     timestamps: true,

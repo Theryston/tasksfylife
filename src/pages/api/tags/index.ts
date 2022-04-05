@@ -1,6 +1,7 @@
 import nextConnect from "next-connect";
 import { NextApiRequest, NextApiResponse } from "next";
-import CreateTaskService from "../../../services/CreateTaskService";
+import CreateTagService from "../../../services/CreateTagService";
+import GetTagsServices from "../../../services/GetTagsServices";
 
 export default nextConnect<NextApiRequest, NextApiResponse>({
   attachParams: true,
@@ -16,18 +17,33 @@ export default nextConnect<NextApiRequest, NextApiResponse>({
       ...error,
     });
   },
-}).post(postHandler);
+})
+  .post(postHandler)
+  .get(getHandler);
 
 async function postHandler(request: NextApiRequest, response: NextApiResponse) {
   const { label } = request.body;
 
-  const task = await CreateTaskService.execute({
+  const tag = await CreateTagService.execute({
     label,
   });
 
   response.status(201).json({
-    message: "Task created",
+    message: "Tag created",
     status: 201,
-    data: task,
+    data: tag,
+  });
+}
+
+export async function getHandler(
+  request: NextApiRequest,
+  response: NextApiResponse
+) {
+  const tags = await GetTagsServices.execute();
+
+  response.status(200).json({
+    message: "All tags got",
+    status: 200,
+    data: tags,
   });
 }

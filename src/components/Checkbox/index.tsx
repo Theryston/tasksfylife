@@ -39,6 +39,7 @@ const Checkbox: NextPage<IProps> = ({
         onClick={(e) => {
           handleCheck();
         }}
+        onChange={(e) => {}}
         checked={check}
       />
       <CheckboxContent checked={check}>
