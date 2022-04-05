@@ -18,7 +18,7 @@ interface IProps {
 }
 
 const CreateCardModal: NextPage<IProps> = ({ show, setter }) => {
-  const [cardName, setCardName] = useState("");
+  const [cardTitle, setCardTitle] = useState("");
   const [cardDescription, setCardDescription] = useState("");
   const [textCreateTask, setTextCreateTask] = useState<string>("");
   const [tasks, setTasks] = useState<ITask[]>([]);
@@ -44,7 +44,6 @@ const CreateCardModal: NextPage<IProps> = ({ show, setter }) => {
   }, []);
 
   const handleChangeSelect = useCallback((options: ITag[]) => {
-    console.log(options);
     setOptionsSelected(options);
   }, []);
 
@@ -97,17 +96,37 @@ const CreateCardModal: NextPage<IProps> = ({ show, setter }) => {
 
   const handleHide = useCallback(() => {
     setCardDescription("");
-    setCardName("");
+    setCardTitle("");
     setOptionsSelected([]);
     setTasks([]);
     setter(false);
   }, [setter]);
 
-  const handleCreateCard = useCallback(() => {
-    console.log(cardName, cardDescription, tasks, optionsSelected);
+  const createCardObject = useCallback(async () => {
+    const tagIds = optionsSelected.map((option) => option._id);
+    const taskIds = tasks.map((task) => task._id);
+
+    return {
+      title: cardTitle,
+      description: cardDescription,
+      tags: tagIds,
+      tasks: taskIds,
+    };
+  }, [optionsSelected, tasks, cardTitle, cardDescription]);
+
+  const handleCreateCard = useCallback(async () => {
+    const life = await createCardObject();
+
+    await fetch("/api/cards", {
+      method: "POST",
+      body: JSON.stringify(life),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     handleHide();
-  }, [cardName, cardDescription, tasks, handleHide, optionsSelected]);
+  }, [handleHide, createCardObject]);
 
   const handleCreateTask = useCallback(async () => {
     if (!textCreateTask || !textCreateTask.length) {
@@ -144,9 +163,9 @@ const CreateCardModal: NextPage<IProps> = ({ show, setter }) => {
         <MainInput
           type="text"
           className="mt-3"
-          placeholder="Write a name for your card"
-          value={cardName}
-          onChange={(e) => setCardName(e.target.value)}
+          placeholder="Write a title for your card"
+          value={cardTitle}
+          onChange={(e) => setCardTitle(e.target.value)}
         />
         <InputCardDescription
           ref={cardDescriptionRef}
