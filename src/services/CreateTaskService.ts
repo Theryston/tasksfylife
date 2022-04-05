@@ -3,7 +3,7 @@ import ErrorApp from "../errors";
 import { ITask } from "../interfaces/ICard";
 import Task from "../models/Task";
 
-export default class CreateLifeService {
+export default class CreateTaskService {
   /**
    * @param {string} label - The label of the task
    * @returns {Promise<Task>} Promise of the created task

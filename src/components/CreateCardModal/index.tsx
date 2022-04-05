@@ -3,9 +3,10 @@ import { useSession } from "next-auth/react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
-import { ITask } from "../../interfaces/ICard";
+import { ITag, ITask } from "../../interfaces/ICard";
 import { ILife } from "../../interfaces/IUser";
 import Checkbox from "../Checkbox";
+import InputTag from "../InputTag";
 import LifeData from "../LifeData";
 
 const CHARACTERS_PER_LINE_IN_CARD_DESCRIPTION = 30;
@@ -22,6 +23,9 @@ const CreateCardModal: NextPage<IProps> = ({ show, setter }) => {
   const [textCreateTask, setTextCreateTask] = useState<string>("");
   const [tasks, setTasks] = useState<ITask[]>([]);
 
+  const [options, setOptions] = useState<ITag[]>([]);
+  const [optionsSelected, setOptionsSelected] = useState<ITag[]>([]);
+
   const cardDescriptionRef = useRef(null);
 
   const [cardDescriptionHistory, setCardDescriptionHistory] = useState<
@@ -29,6 +33,20 @@ const CreateCardModal: NextPage<IProps> = ({ show, setter }) => {
   >([""]);
 
   const { data: session } = useSession();
+
+  useEffect(() => {
+    const loadTags = async () => {
+      const response = await fetch("/api/tags");
+      const { data: tags }: { data: ITag[] } = await response.json();
+      setOptions(tags);
+    };
+    loadTags();
+  }, []);
+
+  const handleChangeSelect = useCallback((options: ITag[]) => {
+    console.log(options);
+    setOptionsSelected(options);
+  }, []);
 
   useEffect(() => {
     if (!cardDescriptionRef || !cardDescriptionRef.current) {
@@ -80,15 +98,16 @@ const CreateCardModal: NextPage<IProps> = ({ show, setter }) => {
   const handleHide = useCallback(() => {
     setCardDescription("");
     setCardName("");
+    setOptionsSelected([]);
     setTasks([]);
     setter(false);
   }, [setter]);
 
   const handleCreateCard = useCallback(() => {
-    console.log(cardName, cardDescription, tasks);
+    console.log(cardName, cardDescription, tasks, optionsSelected);
 
     handleHide();
-  }, [cardName, cardDescription, tasks, handleHide]);
+  }, [cardName, cardDescription, tasks, handleHide, optionsSelected]);
 
   const handleCreateTask = useCallback(async () => {
     if (!textCreateTask || !textCreateTask.length) {
@@ -151,6 +170,10 @@ const CreateCardModal: NextPage<IProps> = ({ show, setter }) => {
               setTextCreateTask("");
             }
           }}
+        />
+        <InputTag
+          options={options}
+          onChange={(options) => handleChangeSelect(options)}
         />
       </ModalBody>
     </Container>

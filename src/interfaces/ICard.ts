@@ -9,3 +9,11 @@ export interface ITask {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface ITag {
+  _id: string;
+  label: string;
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
+}
