@@ -1,11 +1,15 @@
 import { NextPage } from "next";
 import { useSession } from "next-auth/react";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 import { ITask } from "../../interfaces/ICard";
 import { ILife } from "../../interfaces/IUser";
+import Checkbox from "../Checkbox";
 import LifeData from "../LifeData";
+
+const CHARACTERS_PER_LINE_IN_CARD_DESCRIPTION = 30;
+const INITIAL_CARD_DESCRIPTION_HEIGHT = 100;
 
 interface IProps {
   show: boolean;
@@ -18,7 +22,60 @@ const CreateCardModal: NextPage<IProps> = ({ show, setter }) => {
   const [textCreateTask, setTextCreateTask] = useState<string>("");
   const [tasks, setTasks] = useState<ITask[]>([]);
 
+  const cardDescriptionRef = useRef(null);
+
+  const [cardDescriptionHistory, setCardDescriptionHistory] = useState<
+    string[]
+  >([""]);
+
   const { data: session } = useSession();
+
+  useEffect(() => {
+    if (!cardDescriptionRef || !cardDescriptionRef.current) {
+      return;
+    }
+
+    if (
+      cardDescription.length % CHARACTERS_PER_LINE_IN_CARD_DESCRIPTION !==
+      0
+    ) {
+      return;
+    }
+
+    let height: number = Number(
+      (cardDescriptionRef.current as any).clientHeight
+    );
+
+    if (
+      cardDescription.length <
+      cardDescriptionHistory[cardDescriptionHistory.length - 1].length
+    ) {
+      if (cardDescription.length === 0) {
+        height = INITIAL_CARD_DESCRIPTION_HEIGHT;
+      } else {
+        if (height - 15 >= INITIAL_CARD_DESCRIPTION_HEIGHT) {
+          height = height - 15;
+        }
+      }
+    } else {
+      height = height + 20;
+    }
+
+    if (height < INITIAL_CARD_DESCRIPTION_HEIGHT) {
+      return;
+    }
+
+    (cardDescriptionRef.current as any).style.height = height + "px";
+
+    cardDescriptionHistory.push(cardDescription);
+
+    setCardDescriptionHistory((oldDescriptionHistory) => [
+      ...oldDescriptionHistory,
+      cardDescription,
+    ]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cardDescription]);
 
   const handleHide = useCallback(() => {
     setCardDescription("");
@@ -73,28 +130,14 @@ const CreateCardModal: NextPage<IProps> = ({ show, setter }) => {
           onChange={(e) => setCardName(e.target.value)}
         />
         <InputCardDescription
+          ref={cardDescriptionRef}
           className="mt-3"
           placeholder="Write a description"
           value={cardDescription}
           onChange={(e) => setCardDescription(e.target.value)}
         />
         {tasks.map((task) => (
-          <>
-            {task && (
-              <div className="d-flex align-items-center">
-                <input
-                  id={task._id}
-                  type="checkbox"
-                  onClick={(e) => {
-                    (e.target as any).checked = task.done;
-                  }}
-                />
-                <ParagraphTask htmlFor={task._id} key={task._id}>
-                  {task.label}
-                </ParagraphTask>
-              </div>
-            )}
-          </>
+          <>{task && <Checkbox label={task.label} readOnly={true} />}</>
         ))}
         <MainInput
           type="text"
@@ -102,10 +145,6 @@ const CreateCardModal: NextPage<IProps> = ({ show, setter }) => {
           placeholder="Create a new task"
           value={textCreateTask}
           onChange={(e) => setTextCreateTask(e.target.value)}
-          onBlur={() => {
-            handleCreateTask();
-            setTextCreateTask("");
-          }}
           onKeyUp={(event) => {
             if (event.keyCode === 13) {
               handleCreateTask();
@@ -117,13 +156,6 @@ const CreateCardModal: NextPage<IProps> = ({ show, setter }) => {
     </Container>
   );
 };
-
-export const ParagraphTask = styled.label`
-  font-style: normal;
-  font-weight: 300;
-  font-size: 14px;
-  margin: 4px;
-`;
 
 export const Container = styled(Modal)`
   color: ${(props) => props.theme.colors.DarkGrey} !important;
@@ -152,7 +184,7 @@ export const InputCardDescription = styled.textarea`
   outline: none;
   font-size: 0.8em;
   padding: 5px;
-  height: 100px;
+  height: ${INITIAL_CARD_DESCRIPTION_HEIGHT}px;
   width: 100%;
 `;
 
