@@ -19,7 +19,11 @@ const LifeData: NextPage<{ life: ILife }> = ({ life }) => {
               borderRadius: "50%",
             }}
           />
-          <LifeName>#{life.number?.toString().substring(0, 4)}</LifeName>
+          <LifeName>
+            {life.name.length > 16
+              ? life.name.substring(0, 16) + "..."
+              : life.name}
+          </LifeName>
         </Container>
       </a>
     </Link>

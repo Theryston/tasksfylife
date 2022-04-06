@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import "./Task";
+import "./Tag";
 
 const CardSchema = new mongoose.Schema(
   {

@@ -12,9 +12,16 @@ export interface ILife {
   name: string;
   user: IUser;
   cards: ICard[];
+  lefts: ILeft[];
   createdAt: Date;
   image?: string | null;
   updatedAt: Date;
   __v: number;
   number?: number;
+}
+
+export interface ILeft {
+  _id: string;
+  belongsToLife: ILife | string;
+  pushToLeftByLife: ILife | string;
 }

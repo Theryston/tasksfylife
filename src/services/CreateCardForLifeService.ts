@@ -10,7 +10,7 @@ interface ICardData {
   tasks: string[];
 }
 
-export default class CreateCardForLife {
+export default class CreateCardForLifeService {
   /**
    * @param {string} lifeId - id of the life to create the card
    * @param {ICardData} cardData - data to create the card

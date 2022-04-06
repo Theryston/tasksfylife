@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { ILife } from "../../../interfaces/IUser";
 import ErrorApp from "../../../errors";
-import CreateCardService from "../../../services/CreateCardForLife";
+import CreateCardForLifeService from "../../../services/CreateCardForLifeService";
 
 export default nextConnect<NextApiRequest, NextApiResponse>({
   attachParams: true,
@@ -33,7 +33,7 @@ async function postHandler(request: NextApiRequest, response: NextApiResponse) {
 
   const cardData = request.body;
 
-  const card = await CreateCardService.execute(life._id, cardData);
+  const card = await CreateCardForLifeService.execute(life._id, cardData);
 
   response.status(201).json({
     message: "Card created",

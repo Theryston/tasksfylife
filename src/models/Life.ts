@@ -1,4 +1,7 @@
 import mongoose from "mongoose";
+import "./Card";
+import "./User";
+import "./Left";
 
 const LifeSchema = new mongoose.Schema(
   {
